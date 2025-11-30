@@ -1,0 +1,199 @@
+# LSED Configuration File
+# Based on: "Text is All You Need: LLM-enhanced Incremental Social Event Detection"
+# ACL 2025
+
+# =============================================================================
+# DATA CONFIGURATION
+# =============================================================================
+data:
+  # Path to the input CSV file
+  input_file: "data/sample_data.csv"
+  
+  # Column names in the CSV
+  text_column: "text"
+  timestamp_column: "created_at"
+  event_column: "event"
+  
+  # Offline/Online split settings
+  # First N days of data for offline (M0), rest for online (M1, M2, ..., Mn)
+  offline_days: 7
+  
+  # Data split ratios (for training within each block)
+  train_ratio: 0.7
+  val_ratio: 0.1
+  test_ratio: 0.2
+  
+  # Output directory for processed data
+  output_dir: "data/processed"
+
+# =============================================================================
+# LLM CONFIGURATION
+# =============================================================================
+llm:
+  # Available models: llama3.1, qwen2.5, gemma2
+  model: "llama3.1"
+  
+  # Model-specific settings (using Ollama)
+  ollama_host: "http://localhost:11434"
+  
+  # Model names in Ollama
+  model_names:
+    llama3.1: "llama3.1:8b"
+    qwen2.5: "qwen2.5:7b"
+    gemma2: "gemma2:9b"
+  
+  # Generation settings
+  temperature: 0.1
+  max_tokens: 256
+  
+  # Batch processing
+  batch_size: 32
+
+# =============================================================================
+# PROMPT CONFIGURATION
+# =============================================================================
+prompts:
+  # Main prompt type: "summarize" or "paraphrase"
+  # Paper shows "summarize" performs better
+  prompt_type: "summarize"
+  
+  # Summarize prompt template
+  summarize: "Summarize the following sentences: {text}. If you come across some abbreviations, expand them. Please respond in English."
+  
+  # Paraphrase prompt template (alternative)
+  paraphrase: "Paraphrase the following sentences: {text}. If you come across some abbreviations, expand them. Please respond in English."
+  
+  # Whether to enforce English response
+  enforce_english: true
+
+# =============================================================================
+# VECTORIZATION CONFIGURATION
+# =============================================================================
+vectorization:
+  # Pre-trained language model: "sbert" or "word2vec"
+  # Paper shows SBERT performs better
+  model: "sbert"
+  
+  # SBERT model name
+  sbert_model: "all-MiniLM-L6-v2"
+  
+  # Word2Vec model (spaCy)
+  word2vec_model: "en_core_web_sm"
+  
+  # Whether to include time vector
+  include_time: true
+  
+  # Time normalization factors (from paper)
+  time_dmax: 100000  # Normalization factor for days
+  time_smax: 86400   # Seconds in a day
+
+# =============================================================================
+# HYPERBOLIC ENCODER CONFIGURATION
+# =============================================================================
+hyperbolic:
+  # Embedding model: "poincare" or "hyperboloid"
+  # Paper shows Poincaré Ball model performs better
+  model: "poincare"
+  
+  # Curvature of hyperbolic space
+  curvature: 1.0
+  
+  # Hidden layers (paper: 3)
+  num_hidden_layers: 3
+  
+  # Hidden dimensions (paper: 64)
+  hidden_dim: 64
+  
+  # Dropout rate
+  dropout: 0.1
+  
+  # Activation function
+  activation: "relu"
+
+# =============================================================================
+# TRAINING CONFIGURATION
+# =============================================================================
+training:
+  # Optimizer
+  optimizer: "adam"
+  
+  # Learning rate (paper: 0.01)
+  learning_rate: 0.01
+  
+  # Weight decay
+  weight_decay: 0.0001
+  
+  # Number of epochs
+  epochs: 100
+  
+  # Early stopping patience
+  patience: 10
+  
+  # Batch size
+  batch_size: 256
+  
+  # Random seed for reproducibility
+  seed: 42
+
+# =============================================================================
+# INCREMENTAL SED CONFIGURATION
+# =============================================================================
+incremental:
+  # Window size for updating model parameters (paper: 1)
+  window_size: 1
+  
+  # Whether to retrain on each window
+  retrain_on_window: true
+
+# =============================================================================
+# CLUSTERING CONFIGURATION
+# =============================================================================
+clustering:
+  # Clustering algorithm
+  algorithm: "kmeans"
+  
+  # Number of clusters (will be set dynamically based on ground truth)
+  n_clusters: null  # Set to null for automatic detection
+  
+  # K-Means settings
+  kmeans_init: "k-means++"
+  kmeans_n_init: 10
+  kmeans_max_iter: 300
+
+# =============================================================================
+# EVALUATION CONFIGURATION
+# =============================================================================
+evaluation:
+  # Metrics to compute
+  metrics:
+    - "nmi"  # Normalized Mutual Information
+    - "ami"  # Adjusted Mutual Information
+  
+  # Number of runs for averaging (paper: 5)
+  num_runs: 5
+
+# =============================================================================
+# LOGGING AND OUTPUT
+# =============================================================================
+logging:
+  # Log level
+  level: "INFO"
+  
+  # Log file path
+  log_file: "logs/lsed.log"
+  
+  # Results output directory
+  results_dir: "results"
+  
+  # Whether to save intermediate results
+  save_intermediate: true
+
+# =============================================================================
+# DEVICE CONFIGURATION
+# =============================================================================
+device:
+  # Use GPU if available
+  use_gpu: true
+  
+  # GPU device ID
+  gpu_id: 0

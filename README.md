@@ -54,8 +54,8 @@ Social Event Detection (SED) is the task of identifying, categorizing, and track
 
 ```bash
 # Clone the repository
-git clone https://github.com/soni-ratnesh/LSED
-cd LSED
+git clone https://github.com/ZITAIQIU/LSED.git
+cd lsed
 
 # Create virtual environment
 python -m venv venv
@@ -96,6 +96,31 @@ text,created_at,event
 "Just saw the news about the earthquake!",2024-01-15T10:30:00,earthquake_2024
 "OMG the NBA finals were amazing last night",2024-01-15T11:00:00,nba_finals
 ```
+
+## Datasets
+
+### Synthetic Data (Included)
+
+For testing purposes, synthetic data is provided in `data/synthetic_data.csv` (5,000 messages, 50 events).
+
+```bash
+python main.py --mode offline --data data/synthetic_data.csv --mock-llm
+```
+
+### Twitter Event Datasets (Event2012, Event2018)
+
+1. Download tweet IDs from [Twitter event datasets (2012-2016) - Figshare](https://figshare.com/articles/dataset/Twitter_event_datasets_2012-2016_/5100460)
+
+2. Rehydrate tweets using [twarc2](https://twarc-project.readthedocs.io/):
+   ```bash
+   pip install twarc
+   twarc2 configure  # Setup Twitter API credentials
+   twarc2 hydrate tweet_ids.txt tweets.jsonl
+   ```
+
+### Event Detection Corpora (English/French)
+
+For pre-processed event detection datasets, see: [ina-foss/twembeddings](https://github.com/ina-foss/twembeddings)
 
 ## Usage
 
@@ -213,7 +238,10 @@ lsed/
 │   └── config.yaml           # Main configuration file
 ├── data/
 │   ├── __init__.py
-│   └── data_loader.py        # Data loading and preprocessing
+│   ├── data_loader.py        # Data loading and preprocessing
+│   ├── generate_synthetic.py # Synthetic data generator
+│   ├── synthetic_data.csv    # Pre-generated synthetic dataset (5K messages, 50 events)
+│   └── sample_data.csv       # Small sample for quick testing
 ├── models/
 │   ├── __init__.py
 │   ├── lsed.py               # Main LSED model
@@ -229,6 +257,9 @@ lsed/
 │   ├── offline_experiment.py # Offline scenario
 │   ├── online_experiment.py  # Online/incremental scenario
 │   └── ablation_study.py     # Ablation studies
+├── results/                  # Experiment results (auto-generated)
+│   ├── offline/
+│   └── online/
 ├── main.py                   # Main runner script
 ├── requirements.txt          # Dependencies
 └── README.md                 # This file
@@ -273,6 +304,20 @@ python main.py --mode ablation --data data/events.csv
 - **AMI** (Adjusted Mutual Information): NMI adjusted for chance
 
 Results are reported as mean ± std over 5 runs.
+
+## Citation
+
+If you use this code, please cite:
+
+```bibtex
+@inproceedings{qiu2025lsed,
+  title={Text is All You Need: LLM-enhanced Incremental Social Event Detection},
+  author={Qiu, Zitai and Ma, Congbo and Wu, Jia and Yang, Jian},
+  booktitle={Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics},
+  pages={4666--4680},
+  year={2025}
+}
+```
 
 ## License
 

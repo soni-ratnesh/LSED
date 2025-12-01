@@ -54,8 +54,8 @@ Social Event Detection (SED) is the task of identifying, categorizing, and track
 
 ```bash
 # Clone the repository
-git clone https://github.com/ZITAIQIU/LSED.git
-cd lsed
+git clone https://github.com/soni-ratnesh/LSED
+cd LSED
 
 # Create virtual environment
 python -m venv venv
@@ -118,9 +118,9 @@ python main.py --mode offline --data data/synthetic_data.csv --mock-llm
    twarc2 hydrate tweet_ids.txt tweets.jsonl
    ```
 
-### Event Detection Corpora (English/French)
+### Twitter event 2012-16 Corpora (English/French)
 
-For pre-processed event detection datasets, see: [ina-foss/twembeddings](https://github.com/ina-foss/twembeddings)
+For downloading event detection datasets, use: [Twitter event datasets (2012-2016)](https://figshare.com/articles/dataset/Twitter_event_datasets_2012-2016_/5100460))
 
 ## Usage
 
